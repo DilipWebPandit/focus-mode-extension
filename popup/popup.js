@@ -2,6 +2,15 @@ import { getAccount, clearAccount, connectWithCode } from "../lib/account.js";
 import { WEB_APP_URL } from "../lib/config.js";
 import { normalizeDomain } from "../lib/domain.js";
 import { getState, activeEntries, addBlock, removeBlock } from "../lib/storage.js";
+import {
+  getSyncedState,
+  refreshSites,
+  refreshCurrentSession,
+  startSession,
+  pauseSession,
+  resumeSession,
+  endSession,
+} from "../lib/sync.js";
 import { formatRemaining } from "../lib/time.js";
 
 const $ = (id) => document.getElementById(id);
@@ -24,6 +33,18 @@ const el = {
   connectForm: $("connectForm"),
   connectCode: $("connectCode"),
   connectError: $("connectError"),
+  sessionCard: $("sessionCard"),
+  sessionIdle: $("sessionIdle"),
+  sessionActive: $("sessionActive"),
+  sessionSiteCount: $("sessionSiteCount"),
+  sessionDuration: $("sessionDuration"),
+  sessionStartBtn: $("sessionStartBtn"),
+  sessionTimer: $("sessionTimer"),
+  sessionStatusText: $("sessionStatusText"),
+  sessionPauseBtn: $("sessionPauseBtn"),
+  sessionResumeBtn: $("sessionResumeBtn"),
+  sessionEndBtn: $("sessionEndBtn"),
+  sessionError: $("sessionError"),
 };
 
 let blocklist = [];
@@ -118,7 +139,9 @@ el.openConnectPage.addEventListener("click", () => {
 
 el.disconnectBtn.addEventListener("click", async () => {
   await clearAccount();
+  await chrome.storage.local.remove(["syncedSites", "syncedSession"]);
   renderAccount();
+  renderSession();
 });
 
 el.connectForm.addEventListener("submit", async (event) => {
@@ -134,6 +157,8 @@ el.connectForm.addEventListener("submit", async (event) => {
     await connectWithCode(code);
     el.connectCode.value = "";
     renderAccount();
+    await syncNow();
+    await renderSession();
   } catch (err) {
     el.connectError.hidden = false;
     el.connectError.textContent = err.message;
@@ -154,15 +179,79 @@ el.form.addEventListener("submit", async (event) => {
   el.input.value = "";
 });
 
+// --- Synced focus session (mirrors the website's Start/Pause/Resume/End) ---
+
+async function syncNow() {
+  const account = await getAccount();
+  if (!account) return;
+  try {
+    await refreshSites();
+    await refreshCurrentSession();
+  } catch {
+    // popup still renders from whatever was last cached
+  }
+}
+
+async function renderSession() {
+  const account = await getAccount();
+  el.sessionCard.hidden = !account;
+  if (!account) return;
+
+  const { sites, session } = await getSyncedState();
+  const enabledCount = sites.filter((s) => s.enabled).length;
+  const active = !!session && (session.status === "active" || session.status === "paused");
+
+  el.sessionIdle.hidden = active;
+  el.sessionActive.hidden = !active;
+
+  if (!active) {
+    el.sessionSiteCount.textContent =
+      enabledCount > 0
+        ? `${enabledCount} website${enabledCount === 1 ? "" : "s"} ready to block`
+        : "Add and enable a website on the dashboard first.";
+    el.sessionStartBtn.disabled = enabledCount === 0;
+  } else {
+    const paused = session.status === "paused";
+    el.sessionTimer.textContent = formatRemaining(paused ? Date.now() + session.remainingMs : session.endsAt);
+    el.sessionStatusText.textContent = paused
+      ? "Paused"
+      : `Blocking ${session.siteCount} website${session.siteCount === 1 ? "" : "s"}`;
+    el.sessionPauseBtn.hidden = paused;
+    el.sessionResumeBtn.hidden = !paused;
+  }
+}
+
+async function runSessionAction(action) {
+  el.sessionError.hidden = true;
+  try {
+    await action();
+    await renderSession();
+  } catch (err) {
+    el.sessionError.hidden = false;
+    el.sessionError.textContent = err.message ?? "Something went wrong.";
+  }
+}
+
+el.sessionStartBtn.addEventListener("click", () => runSessionAction(() => startSession(Number(el.sessionDuration.value))));
+el.sessionPauseBtn.addEventListener("click", () => runSessionAction(() => pauseSession()));
+el.sessionResumeBtn.addEventListener("click", () => runSessionAction(() => resumeSession()));
+el.sessionEndBtn.addEventListener("click", () => runSessionAction(() => endSession()));
+
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "local") return;
   if (changes.blocklist) refresh();
   if (changes.account) renderAccount();
+  if (changes.syncedSites || changes.syncedSession) renderSession();
 });
 
-setInterval(tick, 1000);
+setInterval(() => {
+  tick();
+  renderSession();
+}, 1000);
 
 await detectCurrentDomain();
 await refresh();
 await renderIncognito();
 await renderAccount();
+await syncNow();
+await renderSession();

@@ -1,15 +1,43 @@
 import { normalizeDomain } from "../lib/domain.js";
 import { getState, activeEntries } from "../lib/storage.js";
+import { getSyncedState, reportBlocked } from "../lib/sync.js";
 import { formatRemaining } from "../lib/time.js";
 
 const $ = (id) => document.getElementById(id);
 
-// The site param can be crafted by any web page (this page is web-accessible), so only trust it once it passes domain validation.
-const site = normalizeDomain(new URLSearchParams(location.search).get("site") ?? "");
+// The site/synced params can be crafted by any web page (this page is web-accessible), so only trust
+// "site" once it passes domain validation; "synced" just decides which data source to read from storage.
+const params = new URLSearchParams(location.search);
+const site = normalizeDomain(params.get("site") ?? "");
+const synced = params.get("synced") === "1";
 
 let blocklist = [];
+let syncedSession = null;
+let reported = false;
 
-function render() {
+function renderSynced() {
+  const active = !!syncedSession && syncedSession.status === "active";
+  const name = site ?? "This site";
+
+  $("title").textContent = active ? "Stay focused" : "Focus time finished";
+  $("message").textContent = active
+    ? `${name} is blocked for the rest of your focus session.`
+    : `Nice work. ${name} is available again.`;
+
+  $("timerBlock").hidden = !active;
+  if (active) $("timer").textContent = formatRemaining(syncedSession.endsAt);
+
+  const link = $("continue");
+  link.hidden = active || !site;
+  if (site) link.href = `https://${site}`;
+
+  if (active && !reported && site) {
+    reported = true;
+    reportBlocked(site);
+  }
+}
+
+function renderLocal() {
   const entry = activeEntries(blocklist).find((e) => e.domain === site);
   const name = site ?? "This site";
   const timed = entry?.endsAt != null;
@@ -29,13 +57,16 @@ function render() {
   if (site) link.href = `https://${site}`;
 }
 
+const render = () => (synced ? renderSynced() : renderLocal());
+
 $("back").addEventListener("click", () => {
   if (history.length > 1) history.back();
   else chrome.tabs.update({ url: "chrome://newtab" });
 });
 
 async function refresh() {
-  ({ blocklist } = await getState());
+  if (synced) ({ session: syncedSession } = await getSyncedState());
+  else ({ blocklist } = await getState());
   render();
 }
 

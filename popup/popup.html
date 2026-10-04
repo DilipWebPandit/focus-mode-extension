@@ -13,6 +13,34 @@
         <span id="badge" class="badge">Off</span>
       </header>
 
+      <section class="card" id="sessionCard" hidden>
+  <h2>Focus Session</h2>
+  <div id="sessionIdle">
+    <p id="sessionSiteCount" class="hint"></p>
+    <label class="duration">
+      <span>Start for</span>
+      <select id="sessionDuration">
+        <option value="15">15 minutes</option>
+        <option value="25" selected>25 minutes</option>
+        <option value="45">45 minutes</option>
+        <option value="60">1 hour</option>
+      </select>
+    </label>
+    <button id="sessionStartBtn" class="primary" type="button">Start Focus</button>
+  </div>
+  <div id="sessionActive" hidden>
+    <span id="sessionTimer" class="timer"></span>
+    <p id="sessionStatusText" class="hint"></p>
+    <div class="session-actions">
+      <button id="sessionPauseBtn" class="secondary" type="button">Pause</button>
+      <button id="sessionResumeBtn" class="secondary" type="button" hidden>Resume</button>
+      <button id="sessionEndBtn" class="danger" type="button">End Focus</button>
+    </div>
+  </div>
+  <p id="sessionError" class="error" role="alert" hidden></p>
+</section>
+
+
       <section class="card">
         <h2>Block a site</h2>
         <label class="duration">
