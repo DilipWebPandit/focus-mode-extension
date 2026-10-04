@@ -10,6 +10,7 @@ import {
   pauseSession,
   resumeSession,
   endSession,
+  addSiteExtention,
 } from "../lib/sync.js";
 import { formatRemaining } from "../lib/time.js";
 
@@ -175,6 +176,7 @@ el.form.addEventListener("submit", async (event) => {
     el.error.textContent = "Enter a valid site like youtube.com";
     return;
   }
+  await addSiteExtention(domain);
   await addBlock(domain, selectedMinutes());
   el.input.value = "";
 });

@@ -14,32 +14,44 @@
       </header>
 
       <section class="card" id="sessionCard" hidden>
-  <h2>Focus Session</h2>
-  <div id="sessionIdle">
-    <p id="sessionSiteCount" class="hint"></p>
-    <label class="duration">
-      <span>Start for</span>
-      <select id="sessionDuration">
-        <option value="15">15 minutes</option>
-        <option value="25" selected>25 minutes</option>
-        <option value="45">45 minutes</option>
-        <option value="60">1 hour</option>
-      </select>
-    </label>
-    <button id="sessionStartBtn" class="primary" type="button">Start Focus</button>
-  </div>
-  <div id="sessionActive" hidden>
-    <span id="sessionTimer" class="timer"></span>
-    <p id="sessionStatusText" class="hint"></p>
-    <div class="session-actions">
-      <button id="sessionPauseBtn" class="secondary" type="button">Pause</button>
-      <button id="sessionResumeBtn" class="secondary" type="button" hidden>Resume</button>
-      <button id="sessionEndBtn" class="danger" type="button">End Focus</button>
-    </div>
-  </div>
-  <p id="sessionError" class="error" role="alert" hidden></p>
-</section>
-
+        <h2>Focus Session</h2>
+        <div id="sessionIdle">
+          <p id="sessionSiteCount" class="hint"></p>
+          <label class="duration">
+            <span>Start for</span>
+            <select id="sessionDuration">
+              <option value="15">15 minutes</option>
+              <option value="25" selected>25 minutes</option>
+              <option value="45">45 minutes</option>
+              <option value="60">1 hour</option>
+            </select>
+          </label>
+          <button id="sessionStartBtn" class="primary" type="button">
+            Start Focus
+          </button>
+        </div>
+        <div id="sessionActive" hidden>
+          <span id="sessionTimer" class="timer"></span>
+          <p id="sessionStatusText" class="hint"></p>
+          <div class="session-actions">
+            <button id="sessionPauseBtn" class="secondary" type="button">
+              Pause
+            </button>
+            <button
+              id="sessionResumeBtn"
+              class="secondary"
+              type="button"
+              hidden
+            >
+              Resume
+            </button>
+            <button id="sessionEndBtn" class="danger" type="button">
+              End Focus
+            </button>
+          </div>
+        </div>
+        <p id="sessionError" class="error" role="alert" hidden></p>
+      </section>
 
       <section class="card">
         <h2>Block a site</h2>
@@ -56,7 +68,12 @@
         </label>
         <button id="addCurrent" class="secondary" type="button" hidden></button>
         <form id="form" autocomplete="off">
-          <input id="input" type="text" placeholder="e.g. youtube.com" aria-label="Site to block" />
+          <input
+            id="input"
+            type="text"
+            placeholder="e.g. youtube.com"
+            aria-label="Site to block"
+          />
           <button type="submit" class="primary">Block</button>
         </form>
         <p id="error" class="error" role="alert" hidden></p>
@@ -78,13 +95,24 @@
         <h2>Account</h2>
         <div id="accountConnected" hidden>
           <p class="hint">Connected as <strong id="accountEmail"></strong></p>
-          <button id="disconnectBtn" class="secondary" type="button">Disconnect</button>
+          <button id="disconnectBtn" class="secondary" type="button">
+            Disconnect
+          </button>
         </div>
         <div id="accountDisconnected" hidden>
-          <p class="hint">Connect your account to sync your blocked websites.</p>
-          <button id="openConnectPage" class="secondary" type="button">Open connect page</button>
+          <p class="hint">
+            Connect your account to sync your blocked websites.
+          </p>
+          <button id="openConnectPage" class="secondary" type="button">
+            Open connect page
+          </button>
           <form id="connectForm" autocomplete="off">
-            <input id="connectCode" type="text" placeholder="Paste your code" aria-label="Connect code" />
+            <input
+              id="connectCode"
+              type="text"
+              placeholder="Paste your code"
+              aria-label="Connect code"
+            />
             <button type="submit" class="primary">Connect</button>
           </form>
           <p id="connectError" class="error" role="alert" hidden></p>
