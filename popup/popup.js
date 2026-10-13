@@ -40,11 +40,14 @@ const el = {
   sessionSiteCount: $("sessionSiteCount"),
   sessionDuration: $("sessionDuration"),
   sessionStartBtn: $("sessionStartBtn"),
+  sessionStrictStartBtn: $("sessionStrictStartBtn"),
   sessionTimer: $("sessionTimer"),
   sessionStatusText: $("sessionStatusText"),
   sessionPauseBtn: $("sessionPauseBtn"),
   sessionResumeBtn: $("sessionResumeBtn"),
   sessionEndBtn: $("sessionEndBtn"),
+  sessionActions: document.querySelector(".session-actions"),
+  sessionLocked: $("sessionLocked"),
   sessionError: $("sessionError"),
 };
 
@@ -212,12 +215,16 @@ async function renderSession() {
         ? `${enabledCount} website${enabledCount === 1 ? "" : "s"} ready to block`
         : "Add and enable a website on the dashboard first.";
     el.sessionStartBtn.disabled = enabledCount === 0;
+    el.sessionStrictStartBtn.disabled = enabledCount === 0;
   } else {
     const paused = session.status === "paused";
+    const locked = session.strict && !paused; // a strict session can never actually be paused — see lib/sync.js
     el.sessionTimer.textContent = formatRemaining(paused ? Date.now() + session.remainingMs : session.endsAt);
     el.sessionStatusText.textContent = paused
       ? "Paused"
-      : `Blocking ${session.siteCount} website${session.siteCount === 1 ? "" : "s"}`;
+      : `Blocking ${session.siteCount} website${session.siteCount === 1 ? "" : "s"}${session.strict ? " · Strict" : ""}`;
+    el.sessionActions.hidden = locked;
+    el.sessionLocked.hidden = !locked;
     el.sessionPauseBtn.hidden = paused;
     el.sessionResumeBtn.hidden = !paused;
   }
@@ -235,6 +242,7 @@ async function runSessionAction(action) {
 }
 
 el.sessionStartBtn.addEventListener("click", () => runSessionAction(() => startSession(Number(el.sessionDuration.value))));
+el.sessionStrictStartBtn.addEventListener("click", () => runSessionAction(() => startSession(Number(el.sessionDuration.value), true)));
 el.sessionPauseBtn.addEventListener("click", () => runSessionAction(() => pauseSession()));
 el.sessionResumeBtn.addEventListener("click", () => runSessionAction(() => resumeSession()));
 el.sessionEndBtn.addEventListener("click", () => runSessionAction(() => endSession()));

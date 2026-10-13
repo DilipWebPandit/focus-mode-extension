@@ -29,6 +29,10 @@
           <button id="sessionStartBtn" class="primary" type="button">
             Start Focus
           </button>
+          <button id="sessionStrictStartBtn" class="outline" type="button">
+            Start Strict Focus
+          </button>
+          <p class="hint">Strict can&rsquo;t be paused or ended early &mdash; only the timer can stop it.</p>
         </div>
         <div id="sessionActive" hidden>
           <span id="sessionTimer" class="timer"></span>
@@ -49,6 +53,9 @@
               End Focus
             </button>
           </div>
+          <p id="sessionLocked" class="hint locked" hidden>
+            🔒 Locked until the timer ends &mdash; strict sessions can&rsquo;t be paused or stopped early.
+          </p>
         </div>
         <p id="sessionError" class="error" role="alert" hidden></p>
       </section>

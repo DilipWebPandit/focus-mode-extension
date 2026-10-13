@@ -69,11 +69,17 @@ input {
 
 button.primary,
 button.secondary,
-button.danger {
-
+button.danger,
+button.outline {
   border-radius: 8px;
   padding: 9px 14px;
   border: 1px solid transparent;
+}
+
+button.outline {
+  background: transparent;
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 button.primary {
@@ -217,4 +223,19 @@ button.danger {
 #sessionIdle .duration,
 #sessionIdle button {
   width: 100%;
+}
+
+#sessionStrictStartBtn {
+  margin-top: 8px;
+}
+
+#sessionIdle .hint {
+  margin-top: 8px;
+}
+
+.hint.locked {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 10px;
 }
