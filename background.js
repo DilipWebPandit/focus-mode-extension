@@ -85,7 +85,7 @@ async function apply() {
 
 // updateDynamicRules calls must not overlap (duplicate rule ids would throw), so run them one at a time.
 let queue = Promise.resolve();
-const queueApply = () => (queue = queue.then(apply).catch((err) => console.error("Focus Mode: apply failed", err)));
+const queueApply = () => (queue = queue.then(apply).catch((err) => console.error("DhunMode: apply failed", err)));
 
 // Pulls the latest sites + session from the server. The storage writes inside refreshSites/refreshCurrentSession
 // trigger queueApply via the listener below, so callers don't need to call it themselves.
@@ -96,7 +96,7 @@ async function syncWithServer() {
     await refreshSites();
     await refreshCurrentSession();
   } catch (err) {
-    console.error("Focus Mode: sync failed", err);
+    console.error("DhunMode: sync failed", err);
   }
 }
 

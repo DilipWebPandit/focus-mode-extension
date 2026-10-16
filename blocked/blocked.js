@@ -47,7 +47,7 @@ function renderLocal() {
     ? `Nice work. ${name} is available again.`
     : timed
       ? `${name} is blocked until its timer runs out.`
-      : `${name} is blocked until you remove it from Focus Mode.`;
+      : `${name} is blocked until you remove it from DhunMode.`;
 
   $("timerBlock").hidden = !timed;
   if (timed) $("timer").textContent = formatRemaining(entry.endsAt);
