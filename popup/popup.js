@@ -1,5 +1,5 @@
 import { getAccount, clearAccount, connectWithCode } from "../lib/account.js";
-import { WEB_APP_URL } from "../lib/config.js";
+import { WEB_APP_URL, PUBLIC_SITE_URL } from "../lib/config.js";
 import { normalizeDomain } from "../lib/domain.js";
 import { getState, activeEntries, addBlock, removeBlock } from "../lib/storage.js";
 import {
@@ -16,6 +16,8 @@ import { formatRemaining } from "../lib/time.js";
 
 const $ = (id) => document.getElementById(id);
 const el = {
+  siteLink: $("siteLink"),
+  siteFooterLink: $("siteFooterLink"),
   badge: $("badge"),
   duration: $("duration"),
   addCurrent: $("addCurrent"),
@@ -50,6 +52,9 @@ const el = {
   sessionLocked: $("sessionLocked"),
   sessionError: $("sessionError"),
 };
+
+el.siteLink.href = PUBLIC_SITE_URL;
+el.siteFooterLink.href = PUBLIC_SITE_URL;
 
 let blocklist = [];
 let currentDomain = null;
