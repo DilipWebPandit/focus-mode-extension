@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 360" width="1000" height="360">
+  <title>DhunMode</title>
+  <g>
+    <polygon fill="#1c4170" points="168.9,38.3 221.0,67.4 166.1,99.9 166.1,169.9 98.9,208.0 98.9,142.5 110.6,135.8 110.6,71.9"/>
+    <polygon fill="#5c7e9f" points="101.7,77.5 43.4,111.1 90.5,138.0 101.7,131.8"/>
+    <polygon fill="#516892" points="233.1,73.6 180.6,103.3 245.0,140.2 297.1,111.1"/>
+    <polygon fill="#334454" points="174.8,111.1 241.3,149.2 241.3,208.0 174.8,169.9"/>
+    <polygon fill="#1c4170" points="250.6,149.2 302.7,119.0 303.3,247.8 251.0,276.9"/>
+    <polygon fill="#1c4170" points="36.7,118.4 89.4,148.1 89.4,217.5 143.7,250.0 94.4,280.2 36.7,247.8"/>
+    <polygon fill="#52678b" points="105.0,215.3 170.6,178.3 169.4,253.9"/>
+    <polygon fill="#304a69" points="170.6,178.3 235.5,216.4 169.4,253.9"/>
+    <polygon fill="#1c4170" points="241.3,224.2 174.8,261.8 174.8,321.7 241.7,283.0"/>
+    <polygon fill="#334454" points="102.8,284.7 152.6,256.2 165.0,261.2 165.5,321.7"/>
+  </g>
+  <text x="350" y="212" font-family="Montserrat, 'Segoe UI', Arial, Helvetica, sans-serif" font-weight="700" font-size="84" letter-spacing="2" fill="#333333">DHUNMODE</text>
+</svg>
