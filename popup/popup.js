@@ -1,4 +1,5 @@
 import { getAccount, clearAccount, connectWithCode } from "../lib/account.js";
+import { apiFetch } from "../lib/api.js";
 import { WEB_APP_URL, PUBLIC_SITE_URL } from "../lib/config.js";
 import { normalizeDomain } from "../lib/domain.js";
 import { getState, activeEntries, addBlock, removeBlock } from "../lib/storage.js";
@@ -147,6 +148,15 @@ el.openConnectPage.addEventListener("click", () => {
 });
 
 el.disconnectBtn.addEventListener("click", async () => {
+  // Used to only forget the token locally, leaving it live server-side forever — the website's
+  // "Extension connected" status (which now actually checks this) would keep saying connected
+  // after a "disconnect". /auth/logout actually ends the session; best-effort, since the user is
+  // done with this device either way even if the request fails (offline, server already gone).
+  try {
+    await apiFetch("/api/auth/logout", { method: "POST" });
+  } catch {
+    // ignore — still clear locally below
+  }
   await clearAccount();
   await chrome.storage.local.remove(["syncedSites", "syncedSession"]);
   renderAccount();
